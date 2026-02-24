@@ -152,8 +152,18 @@ flowchart LR
 
     Alert --> Notify[Action Group Notification]
 ```
+### Condtion
+- This means an alert will be trigged if at least 1 successful login occurs:
+<img width="2207" height="1171" alt="image" src="https://github.com/user-attachments/assets/3721576f-696c-464a-b6ff-8dca70421ce5" />
+### Action
+- Added to an existing action group with notification set to email:
+<img width="3370" height="1269" alt="image" src="https://github.com/user-attachments/assets/4ee8991b-3eae-4cbb-8566-7b8b62f641cf" />
+### Alert Details
+- Severity set to critical
+<img width="2052" height="1266" alt="image" src="https://github.com/user-attachments/assets/0ac4a917-52bf-423e-a616-263f902ca86e" />
 
-```
+# NB: this validates the full detection pipeline from endpoint to cloud alerting
+
 
 6. 
 7. 
