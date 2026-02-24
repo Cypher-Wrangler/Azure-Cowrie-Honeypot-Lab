@@ -161,6 +161,10 @@ flowchart LR
 ### Alert Details
 - Severity set to critical
 <img width="2052" height="1266" alt="image" src="https://github.com/user-attachments/assets/0ac4a917-52bf-423e-a616-263f902ca86e" />
+## SSimulating login
+<img width="1111" height="202" alt="image" src="https://github.com/user-attachments/assets/84c3f8bf-3504-49e6-9b06-fa2f3ea6df24" />
+## Alert trigged and Action Group nofitied via email
+<img width="1618" height="714" alt="image" src="https://github.com/user-attachments/assets/4e4904ba-b291-4273-b0e7-322a15651072" />
 
 # NB: this validates the full detection pipeline from endpoint to cloud alerting
 
