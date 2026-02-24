@@ -136,7 +136,24 @@ CowrieText_CL
 <img width="2762" height="762" alt="image" src="https://github.com/user-attachments/assets/fc5b21d3-bf21-4c67-a79c-d0bfb4f7e243" />
 
 ### Create Azure Alert Rule
+## 🚨 Successful SSH Login Alert Workflow
+
 ```mermaid
+flowchart LR
+
+    Attacker[Internet Source IP] --> Honeypot[Cowrie SSH Honeypot]
+
+    Honeypot --> Logs[Local Log Files]
+    Logs --> AMA[Azure Monitor Agent]
+    AMA --> LAW[Log Analytics Workspace]
+
+    LAW --> KQL[Successful Login Detection Query]
+    KQL --> Alert[Azure Monitor Alert Rule]
+
+    Alert --> Notify[Action Group Notification]
+```
+
+```
 
 6. 
 7. 
