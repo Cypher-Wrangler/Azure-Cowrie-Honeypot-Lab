@@ -76,11 +76,37 @@ Tables used:
 The Data Collection Rule was configured via Azure Portal to collect telemetry from the Endpoint hosting the Cowrie honeypot
 Define what logs are collected:
   - From which resource
-  - Where the logs are sent (Log Analytic workplace
+  - Where the logs are sent (Log Analytic workplace)
   - What table they land in ( CowrieText_CL)
   <img width="3305" height="834" alt="image" src="https://github.com/user-attachments/assets/e65e5d00-dc44-4055-84a9-0a1e4d7baf0b" />
-  
-4. 
+
+##  Threat Hunting -  Parsing Cowrie "New Connection" Events
+**Objective:** Extract and Structure Cowrie SSH connection telemetry from 'CowrieText_CL' to be used for hunting.
+** Why it matters.** Raw text logs are hard to analyze at scale. This query converts lpgs into normalized fields (SrcIP) to support SOC workflows.
+- Simulating from attacker machine,Logging in with privilege access(root):
+<img width="1091" height="410" alt="image" src="https://github.com/user-attachments/assets/b4e528a7-7dfd-41a7-8e2b-a0cd3b9cdb6b" />
+### KQL Query (Log Analytics)
+```kql
+CowrieText_CL
+| where RawData has "New connection:"
+| extend 
+    Message   = extract(@"\]\s+(.*)$", 1, RawData),
+    Timestamp = extract(@"^(\d{4}-\d{2}-\d{2}T[^Z]+Z)", 1, RawData),
+    SrcIP = extract(@"New connection: (\d+\.\d+\.\d+\.\d+):\d+", 1, RawData),
+    SrcPort = extract(@"New connection: \d+\.\d+\.\d+\.\d+:(\d+)", 1, RawData),
+    DstIP = extract(@"\((\d+\.\d+\.\d+\.\d+):", 1, RawData),
+    DstPort = extract(@"\(\d+\.\d+\.\d+\.\d+:(\d+)", 1, RawData),
+    SessionID = extract(@"\[session: ([a-f0-9]+)\]", 1, RawData)
+| project-away RawData
+```
+Output fields produced:
+- Timestamp - event timestamp extracted from log line
+- SrcIP, SrcPort - attacker source IP/port
+- DstIP, DstPort - destination (honeyport container IP/port)
+- SessionID - Cowrie session identifier (key for correlation)
+- Message - cleaned message text
+<img width="2757" height="873" alt="image" src="https://github.com/user-attachments/assets/ba183eb0-46eb-4e91-9f14-4dafe69ba349" />
+
 5.
 
 
