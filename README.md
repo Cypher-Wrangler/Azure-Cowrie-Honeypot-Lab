@@ -86,6 +86,7 @@ Define what logs are collected:
 - Simulating from attacker machine,Logging in with privilege access(root):
 <img width="1091" height="410" alt="image" src="https://github.com/user-attachments/assets/b4e528a7-7dfd-41a7-8e2b-a0cd3b9cdb6b" />
 ### KQL Query (Log Analytics)
+
 ```kql
 CowrieText_CL
 | where RawData has "New connection:"
@@ -99,7 +100,7 @@ CowrieText_CL
     SessionID = extract(@"\[session: ([a-f0-9]+)\]", 1, RawData)
 | project-away RawData
 ```
-Output fields produced:
+#### Output fields produced:
 - Timestamp - event timestamp extracted from log line
 - SrcIP, SrcPort - attacker source IP/port
 - DstIP, DstPort - destination (honeyport container IP/port)
