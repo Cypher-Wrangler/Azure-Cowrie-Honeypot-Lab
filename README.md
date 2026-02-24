@@ -115,18 +115,6 @@ CowrieText_CL
 
 ```kql
 CowrieText_CL
-| where RawData has "New connection:"
-| extend 
-    Message   = extract(@"\]\s+(.*)$", 1, RawData),
-    Timestamp = extract(@"^(\d{4}-\d{2}-\d{2}T[^Z]+Z)", 1, RawData),
-    SrcIP = extract(@"New connection: (\d+\.\d+\.\d+\.\d+):\d+", 1, RawData),
-    SrcPort = extract(@"New connection: \d+\.\d+\.\d+\.\d+:(\d+)", 1, RawData),
-    DstIP = extract(@"\((\d+\.\d+\.\d+\.\d+):", 1, RawData),
-    DstPort = extract(@"\(\d+\.\d+\.\d+\.\d+:(\d+)", 1, RawData),
-    SessionID = extract(@"\[session: ([a-f0-9]+)\]", 1, RawData)
-| project-away RawData
-
-CowrieText_CL
 | where RawData has "login attempt" and RawData has "succeeded"
 | extend
     EventID = "cowrie.login.success",
@@ -137,9 +125,18 @@ CowrieText_CL
     SessionID = extract(@"\[session:\s*([a-f0-9]+)\]", 1, RawData),
     Message = extract(@"\]\s+(.*)$", 1, RawData),
     Status = iif(RawData has "succeeded", "success", "failure")
-| project TimeGenerated, EventID, SrcIP, SessionID, Message, Password, Status
+| project TimeGenerated, EventID, SrcIP, Username, SessionID, Message, Password, Status
 | sort by TimeGenerated desc
 ```
+#### Output fields produced:
+- Timestamp - event timestamp extracted from log line
+- SrcIP - attacker source IP
+- Status - login success 
+- Message - cleaned message text
+<img width="2762" height="762" alt="image" src="https://github.com/user-attachments/assets/fc5b21d3-bf21-4c67-a79c-d0bfb4f7e243" />
+
+### Create Azure Alert Rule
+```mermaid
 
 6. 
 7. 
