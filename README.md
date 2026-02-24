@@ -82,7 +82,7 @@ Define what logs are collected:
 
 ##  Threat Hunting -  Parsing Cowrie "New Connection" Events
 **Objective:** Extract and Structure Cowrie SSH connection telemetry from 'CowrieText_CL' to be used for hunting.
-** Why it matters.** Raw text logs are hard to analyze at scale. This query converts lpgs into normalized fields (SrcIP) to support SOC workflows.
+** Why it matters:** Raw text logs are hard to analyze at scale. This query converts logs into normalized fields (SrcIP) to support SOC workflows.
 - Simulating from attacker machine,Logging in with privilege access(root):
 <img width="1091" height="410" alt="image" src="https://github.com/user-attachments/assets/b4e528a7-7dfd-41a7-8e2b-a0cd3b9cdb6b" />
 ### KQL Query (Log Analytics)
@@ -108,8 +108,38 @@ CowrieText_CL
 - Message - cleaned message text
 <img width="2757" height="873" alt="image" src="https://github.com/user-attachments/assets/ba183eb0-46eb-4e91-9f14-4dafe69ba349" />
 
-5.
+## Threat Hunting - Detecting Cowrie "Successful SSH Login"
+**Objective:**Extract and Stucture Cowrie Successfull SSH Login telemetry from 'CowrieText_CL' to be used for hunting and trigger a near real-time Azure Monitor alert 
 
+#### KQL Query (Log Analytics)
+
+```kql
+CowrieText_CL
+| where RawData has "New connection:"
+| extend 
+    Message   = extract(@"\]\s+(.*)$", 1, RawData),
+    Timestamp = extract(@"^(\d{4}-\d{2}-\d{2}T[^Z]+Z)", 1, RawData),
+    SrcIP = extract(@"New connection: (\d+\.\d+\.\d+\.\d+):\d+", 1, RawData),
+    SrcPort = extract(@"New connection: \d+\.\d+\.\d+\.\d+:(\d+)", 1, RawData),
+    DstIP = extract(@"\((\d+\.\d+\.\d+\.\d+):", 1, RawData),
+    DstPort = extract(@"\(\d+\.\d+\.\d+\.\d+:(\d+)", 1, RawData),
+    SessionID = extract(@"\[session: ([a-f0-9]+)\]", 1, RawData)
+| project-away RawData
+
+CowrieText_CL
+| where RawData has "login attempt" and RawData has "succeeded"
+| extend
+    EventID = "cowrie.login.success",
+    Timestamp = extract(@"^(\d{4}-\d{2}-\d{2}T[^Z]+Z)", 1, RawData),
+    SrcIP = extract(@"\b(\d{1,3}(\.\d{1,3}){3})\b", 1, RawData),
+    Username  = extract(@"login attempt \[b'([^']+)'", 1, RawData),
+    Password  = extract(@"login attempt \[b'[^']*'/b'([^']*)'", 1, RawData),
+    SessionID = extract(@"\[session:\s*([a-f0-9]+)\]", 1, RawData),
+    Message = extract(@"\]\s+(.*)$", 1, RawData),
+    Status = iif(RawData has "succeeded", "success", "failure")
+| project TimeGenerated, EventID, SrcIP, SessionID, Message, Password, Status
+| sort by TimeGenerated desc
+```
 
 6. 
 7. 
