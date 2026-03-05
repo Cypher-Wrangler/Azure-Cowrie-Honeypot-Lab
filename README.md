@@ -11,13 +11,20 @@ This project demonstrates:
 - MITRE ATT&CK mapping
 
 # ⛏️Tools used
-- Cloud Provider: Microsoft Azure; Microsoft Sentinel
-- OS: Ubuntu
-- Containerization: Docker
-- Honeypot: Cowrie
-- Network Filtering: Azure NSG
-- Log Analysis: Cowrie logs
-- VirusTotal
+Cloud Provider
+ -Microsoft Azure
+ -Microsoft Sentinel
+Operating System
+ -Ubuntu
+Security Monitoring
+ - Cowrie Honeypot
+ - Azure Monitor Agent
+ - Log Analytics Workspace
+Infrastucture & Networking
+ - Docker
+ - Azure Network Security Croups (NSG)
+Threat Intelligence
+ - VirusTotal
   
 # ☑️Architecture
 ``` mermaid
@@ -32,14 +39,14 @@ flowchart TD
 ```
 # Deployment
 NB: Initial deployment was performed via Azure Portal UI for rapid prototyping
-</> Markdown
+
 1. Install ubuntu vm on Azure
 2. Deployed Cowrie on docker:
 - To isolate honeypot environment
 - Prevent host compromise
 
 # Configuring Azure resource collection
-</> Markdown
+
 1.Configured Azure NSG:
 <img width="1684" height="1249" alt="Screenshot 2026-02-16 104000" src="https://github.com/user-attachments/assets/3c1bb588-b392-4096-bb8b-724a3f5cb3cd" />
 - Opened Port 2222 for honeypot deception
@@ -59,10 +66,13 @@ The following resource was connected:
 
 Tables used:
 <img width="3077" height="1079" alt="image" src="https://github.com/user-attachments/assets/9c881bf1-c184-450e-87f6-030f6e563f07" />
-- Syslog for linux authentication logs
-- Hearbeat for VM health monitoring
-- Perf for CPU & mmemory monitoring
-- CowrieText_CL for Honeypot attack telemetry
+
+| Table | Purpose|
+|-------|--------|
+| Syslog | linux authentication logs |
+| Hearbeat | VM health monitoring |
+| Perf | CPU & mmemory monitoring |
+| CowrieText_CL | Honeypot attack telemetry |
 
 
 3. Data Collection Endpoint:
@@ -81,11 +91,12 @@ Define what logs are collected:
   - What table they land in ( CowrieText_CL)
   <img width="3305" height="834" alt="image" src="https://github.com/user-attachments/assets/e65e5d00-dc44-4055-84a9-0a1e4d7baf0b" />
 
-##  Threat Hunting -  Parsing Cowrie "New Connection" Events
+🔍 Threat Hunting -  Parsing Cowrie "New Connection" Events
 **Objective:** Extract and Structure Cowrie SSH connection telemetry from 'CowrieText_CL' to be used for hunting.
 ** Why it matters:** Raw text logs are hard to analyze at scale. This query converts logs into normalized fields (SrcIP) to support SOC workflows.
 - Simulating from attacker machine,Logging in with privilege access(root):
 <img width="1091" height="410" alt="image" src="https://github.com/user-attachments/assets/b4e528a7-7dfd-41a7-8e2b-a0cd3b9cdb6b" />
+
 ### KQL Query (Log Analytics)
 
 ```kql
@@ -102,10 +113,14 @@ CowrieText_CL
 | project-away RawData
 ```
 #### Output fields produced:
-- Timestamp - event timestamp extracted from log line
-- SrcIP, SrcPort - attacker source IP/port
-- DstIP, DstPort - destination (honeyport container IP/port)
-- SessionID - Cowrie session identifier (key for correlation)
+| Field | Description |
+| ------- |----------|
+| Timestamp | Event timestamp extracted from log line |
+| SrcIP | Attacker source IP |
+| SrcPort | Attacker source port |
+| DstIP | destination honeypot IP|
+| DstPort | destination honey port|
+| SessionID | Cowrie session identifier |
 - Message - cleaned message text
 <img width="2757" height="873" alt="image" src="https://github.com/user-attachments/assets/ba183eb0-46eb-4e91-9f14-4dafe69ba349" />
 
