@@ -168,8 +168,12 @@ flowchart LR
 
 # NB: this validates the full detection pipeline from endpoint to cloud alerting
 
+# Threat Hunting and detections
+- To simulate a real-world internet-exposed system, NSG was configured with a permissive inbound rule allowing traffic from any source to the SSH honeyport. Attackers discovering and interaction with the honeypot generates telemetry for analysis in Microsoft Sentinel:
+<img width="583" height="1234" alt="Screenshot 2026-02-28 091629" src="https://github.com/user-attachments/assets/f02e51c0-f704-4114-b335-fcd4a003d96f" />
 
-6. 
+  
+
 7. 
 8.
 9. - 
