@@ -163,9 +163,11 @@ flowchart LR
 ### Alert Details
 - Severity set to critical
 <img width="2052" height="1266" alt="image" src="https://github.com/user-attachments/assets/0ac4a917-52bf-423e-a616-263f902ca86e" />
+
 ## SSimulating login
 
 <img width="1111" height="202" alt="image" src="https://github.com/user-attachments/assets/84c3f8bf-3504-49e6-9b06-fa2f3ea6df24" />
+
 ## Alert trigged and Action Group nofitied via email
 <img width="1618" height="714" alt="image" src="https://github.com/user-attachments/assets/4e4904ba-b291-4273-b0e7-322a15651072" />
 
@@ -204,7 +206,7 @@ CowrieText_CL
 <img width="1107" height="661" alt="image" src="https://github.com/user-attachments/assets/2e014fcf-59be-4a60-b2d9-ef9881f0f6c6" />
 - From the investigation the attacker is trying common default credentials.
 - This confirms: the attack is a credential brute-force attempt targeting poorly secured SSH servers.
-- 
+  
 # Step 2: commands executed after login
 Once the login succeeded, attackers will start executing commands:
 - To identify system type
@@ -218,7 +220,8 @@ CowrieText_CL
 ```
 <img width="1052" height="1049" alt="image" src="https://github.com/user-attachments/assets/5a19d662-6ab5-4422-8fb2-14cdd9a0878b" />
 
-- Follow the intelligenc: During post-compromise activity, the attacker executed the command uname -a to gather system information from the honeypot. The command was mapped to MITRE ATT$CK framework
+- Follow the intelligenc: During post-compromise activity, the attacker executed the command uname -a to gather system information from the honeypot. The command was mapped to MITRE ATT$CK framework:
+  
 | Command | MITRE Technique | Tactic|
 | -------- |---------------| -------|
 |uname -a | T1082-System Information Discovery | TA0007-Discovery|
