@@ -220,7 +220,7 @@ CowrieText_CL
 ```
 <img width="1052" height="1049" alt="image" src="https://github.com/user-attachments/assets/5a19d662-6ab5-4422-8fb2-14cdd9a0878b" />
 
-- Follow the intelligenc: During post-compromise activity, the attacker executed the command uname -a to gather system information from the honeypot. The command was mapped to MITRE ATT$CK framework:
+- From the intelligenc: During post-compromise activity, the attacker executed the command uname -a to gather system information from the honeypot. The command was mapped to MITRE ATT$CK framework:
   
 | Command | MITRE Technique | Tactic|
 | -------- |---------------| -------|
