@@ -121,10 +121,10 @@ CowrieText_CL
 | DstIP | destination honeypot IP|
 | DstPort | destination honey port|
 | SessionID | Cowrie session identifier |
-- Message - cleaned message text
+| Message | cleaned message text |
 <img width="2757" height="873" alt="image" src="https://github.com/user-attachments/assets/ba183eb0-46eb-4e91-9f14-4dafe69ba349" />
 
-## Threat Hunting - Detecting Cowrie "Successful SSH Login"
+🔒Detecting Cowrie "Successful SSH Login"
 **Objective:**Extract and Stucture Cowrie Successfull SSH Login telemetry from 'CowrieText_CL' to be used for hunting and trigger a near real-time Azure Monitor alert 
 
 #### KQL Query (Log Analytics)
@@ -168,15 +168,15 @@ flowchart LR
 
     Alert --> Notify[Action Group Notification]
 ```
-### Condtion
+### Alert Condtion
 - This means an alert will be trigged if at least 1 successful login occurs:
 <img width="2207" height="1171" alt="image" src="https://github.com/user-attachments/assets/3721576f-696c-464a-b6ff-8dca70421ce5" />
 
-### Action
+### Action Group
 - Added to an existing action group with notification set to email:
 <img width="3370" height="1269" alt="image" src="https://github.com/user-attachments/assets/4ee8991b-3eae-4cbb-8566-7b8b62f641cf" />
 
-### Alert Details
+### Alert Severity
 - Severity set to critical
 <img width="2052" height="1266" alt="image" src="https://github.com/user-attachments/assets/0ac4a917-52bf-423e-a616-263f902ca86e" />
 
@@ -189,7 +189,7 @@ flowchart LR
 
 # NB: this validates the full detection pipeline from endpoint to cloud alerting
 
-# Threat Hunting and detections
+🌐 Threat Hunting
 - To simulate a real-world internet-exposed system, NSG was configured with a permissive inbound rule allowing traffic from any source to the SSH honeyport. Attackers discovering and interaction with the honeypot generates telemetry for analysis in Microsoft Sentinel:
 <img width="583" height="1234" alt="Screenshot 2026-02-28 091629" src="https://github.com/user-attachments/assets/f02e51c0-f704-4114-b335-fcd4a003d96f" />
 
@@ -264,4 +264,25 @@ CowrieText_CL
 - Hosted on DigitalOcean cloud infrastructure
 
 This suggests the attack was part of automated scanning campaigns targetting exposed SSH services.
+
+# MITRE ATT$CK Mapping Summary
+| Stage | Technique | MITRE ID | Description |
+| ----------- |-----------|---------|----------|
+| SSH Brute Force | T1110 | Multiple password attempts against SSH|
+| System Discovery | System Information Discovery | T1082 | Identify OS and Kernel version |
+| External Scanning | Active Scanning | T1593 | Internet-wide scanning for SSH services |
+
+# Conclusion
+
+This investigation demonstrates how a Cowrie honeypot deployed in Microsoft Azure can capture real-world attacker activity and generate actionable threat intelligence.
+
+The observed attacker behavior followed a common automated attack pattern:
+
+Internet scanning → SSH brute-force → system discovery.
+
+Threat intelligence enrichment confirmed that the attacking IP had previously been associated with SSH reconnaissance activity originating from cloud-hosted infrastructure.
+
+Although no further exploitation occurred, the attack demonstrates how exposed SSH services are continuously targeted by automated scanning campaigns across the internet.
+
+Honeypots provide valuable telemetry that can help security teams understand attacker behavior and improve defensive monitoring capabilities.
 
