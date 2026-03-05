@@ -268,21 +268,21 @@ This suggests the attack was part of automated scanning campaigns targetting exp
 # MITRE ATT$CK Mapping Summary
 | Stage | Technique | MITRE ID | Description |
 | ----------- |-----------|---------|----------|
-| SSH Brute Force | T1110 | Multiple password attempts against SSH|
+| SSH Brute Force | Brute Force |  T1110 | Multiple password attempts against SSH|
 | System Discovery | System Information Discovery | T1082 | Identify OS and Kernel version |
 | External Scanning | Active Scanning | T1593 | Internet-wide scanning for SSH services |
 
 # Conclusion
 
-This investigation demonstrates how a Cowrie honeypot deployed in Microsoft Azure can capture real-world attacker activity and generate actionable threat intelligence.
+- This investigation demonstrates how a Cowrie honeypot deployed in Microsoft Azure can capture real-world attacker activity and generate actionable threat intelligence.
 
-The observed attacker behavior followed a common automated attack pattern:
+- The observed attacker behavior followed a common automated attack pattern:
 
-Internet scanning → SSH brute-force → system discovery.
+- Internet scanning → SSH brute-force → system discovery.
 
-Threat intelligence enrichment confirmed that the attacking IP had previously been associated with SSH reconnaissance activity originating from cloud-hosted infrastructure.
+- Threat intelligence enrichment confirmed that the attacking IP had previously been associated with SSH reconnaissance activity originating from cloud-hosted infrastructure.
 
-Although no further exploitation occurred, the attack demonstrates how exposed SSH services are continuously targeted by automated scanning campaigns across the internet.
+- Although no further exploitation occurred, the attack demonstrates how exposed SSH services are continuously targeted by automated scanning campaigns across the internet.
 
-Honeypots provide valuable telemetry that can help security teams understand attacker behavior and improve defensive monitoring capabilities.
+- Honeypots provide valuable telemetry that can help security teams understand attacker behavior and improve defensive monitoring capabilities.
 
