@@ -155,13 +155,16 @@ flowchart LR
 ### Condtion
 - This means an alert will be trigged if at least 1 successful login occurs:
 <img width="2207" height="1171" alt="image" src="https://github.com/user-attachments/assets/3721576f-696c-464a-b6ff-8dca70421ce5" />
+
 ### Action
 - Added to an existing action group with notification set to email:
 <img width="3370" height="1269" alt="image" src="https://github.com/user-attachments/assets/4ee8991b-3eae-4cbb-8566-7b8b62f641cf" />
+
 ### Alert Details
 - Severity set to critical
 <img width="2052" height="1266" alt="image" src="https://github.com/user-attachments/assets/0ac4a917-52bf-423e-a616-263f902ca86e" />
 ## SSimulating login
+
 <img width="1111" height="202" alt="image" src="https://github.com/user-attachments/assets/84c3f8bf-3504-49e6-9b06-fa2f3ea6df24" />
 ## Alert trigged and Action Group nofitied via email
 <img width="1618" height="714" alt="image" src="https://github.com/user-attachments/assets/4e4904ba-b291-4273-b0e7-322a15651072" />
@@ -171,9 +174,11 @@ flowchart LR
 # Threat Hunting and detections
 - To simulate a real-world internet-exposed system, NSG was configured with a permissive inbound rule allowing traffic from any source to the SSH honeyport. Attackers discovering and interaction with the honeypot generates telemetry for analysis in Microsoft Sentinel:
 <img width="583" height="1234" alt="Screenshot 2026-02-28 091629" src="https://github.com/user-attachments/assets/f02e51c0-f704-4114-b335-fcd4a003d96f" />
+
 ## Attack Overview
 Within a short time of exposing the server, the honeypot received automated SSH connection attempts from multiple external hosts:
 ### Top Attacking IP
+
 ``` kql
 CowrieText_CL
 | where RawData has "New Connection"
@@ -182,7 +187,9 @@ CowrieText_CL
 | sort by Attempts desc
 ```
 <img width="1137" height="1118" alt="Screenshot 2026-03-05 073620" src="https://github.com/user-attachments/assets/ca572bbe-a71f-4458-b509-93801fc4eac8" />
-# Step 1 investigating if the attacker successfully logged in 
+
+# Step 1: investigating if the attacker successfully logged in 
+
 ```kql
 CowrieText_CL
 | where RawData has "139.59.230.238"
@@ -197,12 +204,45 @@ CowrieText_CL
 <img width="1107" height="661" alt="image" src="https://github.com/user-attachments/assets/2e014fcf-59be-4a60-b2d9-ef9881f0f6c6" />
 - From the investigation the attacker is trying common default credentials.
 - This confirms: the attack is a credential brute-force attempt targeting poorly secured SSH servers.
-# Step commands executed after login
-Once the login succeeded, attackers wil start executing commands:
-- To identif
-
-7. 
-8.
-9. - 
 - 
->
+# Step 2: commands executed after login
+Once the login succeeded, attackers will start executing commands:
+- To identify system type
+
+``` kql
+CowrieText_CL
+| where RawData has "139.59.230.238"
+| where RawData has "CMD:"
+| extend Command = extract(@"CMD:\s+(.*)", 1, RawData)
+| project TimeGenerated, Command
+```
+<img width="1052" height="1049" alt="image" src="https://github.com/user-attachments/assets/5a19d662-6ab5-4422-8fb2-14cdd9a0878b" />
+
+- Follow the intelligenc: During post-compromise activity, the attacker executed the command uname -a to gather system information from the honeypot. The command was mapped to MITRE ATT$CK framework
+| Command | MITRE Technique | Tactic|
+| -------- |---------------| -------|
+|uname -a | T1082-System Information Discovery | TA0007-Discovery|
+
+# Step 3: Assessing Post-Discovery Acivity
+- further investigation shows that after executing discovery command, no additional commands such as malware downloads or system exploration were observed from the attacker session.
+  
+``` kql
+CowrieText_CL
+| where RawData has "139.59.230.238"
+| where RawData has "CMD:"
+| extend Command = extract(@"CMD:\s+(.*)", 1, RawData)
+| summarize CommandCount=count() by Command
+```
+<img width="1093" height="374" alt="Screenshot 2026-03-05 201540" src="https://github.com/user-attachments/assets/3b7ab194-496c-499b-95f5-fb88d93b51b0" />
+
+# Step 3 Further OSINT
+- Further OSINT was investigated on the IP using VirusTotal to determine its reputation
+<img width="1521" height="1078" alt="Screenshot 2026-03-05 202136" src="https://github.com/user-attachments/assets/4cb54d2a-1d95-4a54-b374-6489b17080f2" />
+
+## Key findings
+- 9 security vendors flagged the IP as malicious
+- Associated with external SSH reconnaissance activity
+- Hosted on DigitalOcean cloud infrastructure
+
+This suggests the attack was part of automated scanning campaigns targetting exposed SSH services.
+
