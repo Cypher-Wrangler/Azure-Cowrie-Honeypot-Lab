@@ -11,13 +11,14 @@ This project demonstrates:
 - MITRE ATT&CK mapping
 
 # ⛏️Tools used
-- Cloud Provider: Microsoft Azure
+- Cloud Provider: Microsoft Azure; Microsoft Sentinel
 - OS: Ubuntu
 - Containerization: Docker
 - Honeypot: Cowrie
 - Network Filtering: Azure NSG
 - Log Analysis: Cowrie logs
-
+- VirusTotal
+  
 # ☑️Architecture
 ``` mermaid
 flowchart TD
